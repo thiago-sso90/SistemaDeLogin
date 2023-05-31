@@ -4,17 +4,19 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState();
-
+  
     useEffect(()=> {
         const userToken = localStorage.getItem("user_token");
         const userStorage = localStorage.getItem("user_db");
 
+    
         if(userToken && userStorage){
             const hasUser = JSON.parse(userStorage)?.filter(
                 (user) => user.email === JSON.parse(userToken).email
             );
             if (hasUser) setUser(hasUser[0]);
         }
+    
     },[])
 const signin = (email , password) => {
     const userStorage = JSON.parse(localStorage.getItem("user_db"))
@@ -56,6 +58,29 @@ const signup = (email,password) => {
         setUser(null);
         localStorage.removeItem("user_token");
     };
+    async function postJSON(data) {
+        try {
+          const response = await fetch("https://localhost:7146/swagger/index.html", {
+            method: "GET",
+            mode: "no-cors",
+            // credentials: "include",
+            // headers: {
+            //   "Content-Type": "application/json",
+            // },
+            // body: JSON.stringify(data),
+          });
+      
+          const result = await response.text();
+          console.log("Sucesso:", result);
+        } catch (error) {
+          console.error("Erro:", error);
+        }
+      }
+      
+      const data = { int: "", Email: "", Senha: "" };
+      postJSON(data);
+    
+      
 
     return <AuthContext.Provider
     value={{user,signed: !!user,signin,signup,signout}}
